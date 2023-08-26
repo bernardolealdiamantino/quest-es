@@ -1,0 +1,70 @@
+1.#!/bin/bash
+
+# Defina o número de pastas que deseja criar
+num_pastas=10
+
+# Arquivo contendo uma lista de palavras do dicionário
+dicionario="/usr/share/dict/words"
+
+# Verifique se o arquivo de dicionário existe
+if [ ! -f "$dicionario" ]; then
+    echo "Arquivo de dicionário não encontrado."
+    exit 1
+fi
+
+# Loop para criar as pastas
+for ((i=1; i<=num_pastas; i++)); do
+    # Gere um número aleatório para escolher uma linha no arquivo de dicionário
+    linha_aleatoria=$(( ( RANDOM % $(wc -l < "$dicionario") ) + 1 ))
+
+    # Obtenha a palavra da linha aleatória no arquivo de dicionário
+    nome=$(sed -n "${linha_aleatoria}p" "$dicionario")
+
+    # Crie a pasta com permissão apenas de leitura
+    mkdir "$nome"
+    chmod 555 "$nome"
+done
+2.#!/bin/bash
+
+# Substitua "nomedeusuario" pelo nome do usuário desejado
+usuario="nomedeusuario"
+
+# Use o comando find para listar recursivamente os arquivos na pasta /home do usuário
+find "/home/$usuario" -type f
+3.#!/bin/bash
+
+# Substitua "usuario1" e "usuario2" pelos nomes dos usuários desejados
+usuarios=("usuario1" "usuario2")
+
+# Loop para criar os usuários e adicionar senhas aleatórias
+for usuario in "${usuarios[@]}"; do
+    # Gere uma senha aleatória (10 caracteres) usando /dev/urandom
+    senha=$(tr -dc A-Za-z0-9 < /dev/urandom | head -c 10)
+
+    # Criptografe a senha usando SHA-512
+    senha_criptografada=$(echo "$senha" | openssl passwd -6 -stdin)
+
+    # Crie o usuário com a senha criptografada
+    sudo useradd -m -p "$senha_criptografada" "$usuario"
+
+    # Adicione o usuário ao grupo "adms"
+    sudo usermod -aG adms "$usuario"
+
+    echo "Usuário: $usuario | Senha: $senha"
+done#!/bin/bash
+
+# Use o comando getent para obter a lista de usuários e exibir as datas de último login
+getent passwd | while IFS=: read -r username _ uid _ _ _ home shell; do
+    last_login=$(last -F -n 1 "$username" | awk '{print $3,$4,$5}')
+    echo "Usuário: $username | Último login: $last_login"
+done
+4.#!/bin/bash
+
+# Use o comando getent para obter a lista de usuários e exibir as datas de último login
+getent passwd | while IFS=: read -r username _ uid _ _ _ home shell; do
+    last_login=$(last -F -n 1 "$username" | awk '{print $3,$4,$5}')
+    echo "Usuário: $username | Último login: $last_login"
+done
+5.sudo ip link add link eth0 name eth0.600 type vlan id 600
+sudo ip link set dev eth0.600 up
+sudo ip addr add 10.11.12.10/24 dev eth0.600
